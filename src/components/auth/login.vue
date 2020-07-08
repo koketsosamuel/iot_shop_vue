@@ -67,11 +67,7 @@ export default {
                     this.done()
 
                 } catch(err) {
-
-                    let err2 = {}
-                    err2.msg = err
-
-                    this.$alert({err: err2}, this.$toast)
+                    this.$alert({err}, this.$toast)
                     this.loading = false
                 }
 

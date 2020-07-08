@@ -4,6 +4,7 @@
     	<navBar />
 
     	<v-main>
+			<router-view></router-view>
     	</v-main>
   	</v-app>
 </template>
@@ -21,5 +22,11 @@ export default {
 	data: () => ({
 		//
 	}),
-};
+
+	created() {
+		// this.$axios.get("/")
+		// console.log(document.cookie)  
+	}
+
+}
 </script>

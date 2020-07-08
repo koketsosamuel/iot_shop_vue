@@ -123,7 +123,7 @@
 <script>
 import login from "./auth/login"
 import register from "./auth/register"
-import passReset from "./auth/passReset"
+import passReset from "./auth/passResetLink"
 
 export default {
     name: "navbar",
@@ -146,7 +146,7 @@ export default {
             this.loginDialog = false
             this.regDialog = false
             this.cartDialog = false
-            this.passReset = false
+            this.passResetDialog = false
         },
 
         resetDialog() {

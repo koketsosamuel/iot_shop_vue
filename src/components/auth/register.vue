@@ -54,7 +54,7 @@
                 :error-messages="pwd2Err.msg"
             ></v-text-field>
 
-            <v-btn color="green" :loading="loading" type="submit">Sign Up</v-btn> <v-divider vertical inset class="mx-2"></v-divider> 
+            <v-btn color="green" :loading="loading" type="submit">Register</v-btn> <v-divider vertical inset class="mx-2"></v-divider> 
 
         </v-form>
     </div>

@@ -1,20 +1,29 @@
 <template>
-    
+
+
     <div class="px-4 py-4">
 
-        <v-form @submit="resetPwd">
+        <v-form @submit="resetPassword">
             
             <v-text-field
-                name="name"
-                label="email"
-                id="id"
+                label="New Password"
                 solo
-                v-model="email"
-                :error="emailErr.error"
-                :error-messages="emailErr.msg"
+                type="password"
+                v-model="pwd"
+                :error="pwdErr.error"
+                :error-messages="pwdErr.msg"
             ></v-text-field>
 
-            <v-btn type="submit">Reset</v-btn>
+            <v-text-field
+                label="Verify New Password"
+                solo
+                type="password"
+                v-model="pwd2"
+                :error="pwd2Err.error"
+                :error-messages="pwd2Err.msg"
+            ></v-text-field>
+
+            <v-btn type="submit">Submit</v-btn>
 
         </v-form>
 
@@ -23,14 +32,20 @@
 </template>
 
 <script>
-import verify from "../../util/validation"
-
 export default {
-    name: "passwordResetLink",
+
+    name: "passReset",
 
     data: () => ({
-        email: "",
-        emailErr: {
+        token: null,
+        pwd: "",
+        pwd2: "",
+        loading: false,
+        pwdErr: {
+            error: false,
+            msg: ""
+        },
+        pwd2Err: {
             error: false,
             msg: ""
         }
@@ -39,44 +54,71 @@ export default {
     props: ["done"],
 
     methods: {
-        async resetPwd(e) {
 
+        verified() {
+
+            let verified = true
+
+            if(this.pwd.length < 8) {
+                verified = false
+                this.pwdErr.error = true
+                this.pwdErr.msg = "Password should be 8 or more charecters long"
+            } else {
+                this.pwdErr.error = false
+                this.pwdErr.msg = ""
+            }
+            
+            if(this.pwd2 != this.pwd) {
+                verified = false
+                this.pwd2Err.error = true
+                this.pwd2Err.msg = "Passwords do not match"
+            } else {
+                this.pwdErr.error = false
+                this.pwdErr.msg = ""
+            }
+
+            return verified
+
+        },
+
+        async resetPassword(e) {
+            
             e.preventDefault()
 
-            // if email is valid
-            if(verify.email(this.email)) {
+            if(this.verified()) {
                 
                 try {
-                    
-                    this.emailErr.error = false
-                    this.emailErr.msg = ""
-                    let res = await this.$axios.post("/users/pwdresetlink", {email: this.email})
+                    this.loading = true
+                
+                    let res = await this.$axios.post("/users/pwdreset/"+this.token, {pwd: this.pwd})
+                    this.loading = false
+
                     if(res.data.err) throw res.data.err.msg
-                    this.$alert(res.data)
-                    this.email = ""
+                    
+                    // output message if its available
+                    this.$alert(res.data, this.$toast)
                     this.done()
 
                 } catch (err) {
-                    
-                    let error = {
-                        msg: ''
-                    }
 
+                    let error = {}
                     error.msg = err
-                    this.$alert(error)
+                    this.loading = false
+                    this.$alert({err:error}, this.$toast)
 
                 }
-
-
-            } else {
-                
-                // if email is invalid
-                this.emailErr.error = true
-                this.emailErr.msg = "Enter valid email address!"
-
             }
 
         }
+    },
+
+    created() {
+        this.token = this.$route.params.token
     }
+
 }
 </script>
+
+<style>
+
+</style>
